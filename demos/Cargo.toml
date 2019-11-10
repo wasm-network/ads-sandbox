@@ -6,7 +6,7 @@ edition = "2018"
 
 [[bin]]
 name = "teapot"
-path = "teapot/main.rs"
+path = "viewer/teapot.rs"
 
 [dependencies]
 log = "0.4"
