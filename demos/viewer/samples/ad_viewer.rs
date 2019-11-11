@@ -11,7 +11,7 @@ use quicksilver::{
 };
 
 use tweek::{
-    core::{AppState},
+    core::AppState,
     events::*,
     gui::*,
     tools::*,
@@ -36,33 +36,24 @@ const TOOLBAR_BTN_H: f32 = 32.0;
 pub struct AdViewer {
     frame: Rectangle,
     stage: Stage,
-    theme_picker: ThemePicker,
 }
 
 impl AdViewer {
     pub fn new(frame: Rectangle) -> AdViewer {
         let stage = Stage::new(frame.clone());
-        let mut theme_picker = ThemePicker::new();
-        theme_picker.add_theme(LIGHT_THEME, "Light theme", || {
-            let theme = ThemeBuilder::light_owl();
-            theme
-        });
-        theme_picker.add_theme(DARK_THEME, "Dark theme", || {
-            let theme = ThemeBuilder::night_owl();
-            theme
-        });
 
         let controller = AdViewer {
             frame,
             stage,
-            theme_picker,
         };
         controller
     }
 
-    fn build_stage(&mut self, frame: Rectangle) -> Stage {
-        let mut stage = Stage::new(frame.clone());
-        stage.title = "Ad Viewer".to_string();
+    fn build_stage(&mut self, frame: Rectangle, theme: &mut Theme) -> Stage {
+
+        let mut builder = TeapotAd {};
+        let mut stage = builder.build_stage(&frame);
+        stage.offset_position(Vector::new(0.0, TOOLBAR_H));
 
         let rect = Rectangle::new(frame.pos, (frame.width(), TOOLBAR_H));
         let toolbar = self.toolbar_scene(&rect);
@@ -82,10 +73,15 @@ impl AdViewer {
         let ypos = (frame.height() - TOOLBAR_BTN_H) / 2.0;
 
         // Toolbar buttons to add/remove
-        let subframe = scene.sub_frame((xpos, ypos), (TOOLBAR_BTN_W, TOOLBAR_BTN_H));
-        let mut button = Button::new(subframe).with_text("300x250");
-        button.layer.font_style = FontStyle::new(14.0, Color::BLACK);
-        scene.add_control(Box::new(button));
+
+        for (key, props) in AD_SIZES_MAP.iter() {
+            let subframe = scene.sub_frame((xpos, ypos), (TOOLBAR_BTN_W, TOOLBAR_BTN_H));
+            let mut button = Button::new(subframe).with_text(key);
+            button.layer.font_style = FontStyle::new(14.0, Color::BLACK);
+            scene.add_control(Box::new(button));
+            // TODO: add callback
+            xpos += (TOOLBAR_BTN_W + SPACING);
+        }
 
         scene
     }
@@ -105,7 +101,6 @@ impl AdViewer {
         let mut button = Button::new(frame).with_text("Normal");
         button.layer.external_id = Some(Box::new(item.id));
         scene.add_control(Box::new(button));
-
 
         scene
     }
@@ -162,8 +157,8 @@ impl AdViewer {
 
 impl Controller for AdViewer {
 
-    fn view_will_load(&mut self) {
-        self.stage = self.build_stage(self.frame.clone());
+    fn view_will_load(&mut self, theme: &mut Theme) {
+        self.stage = self.build_stage(self.frame.clone(), theme);
         self.stage.notify(&DisplayEvent::Ready);
     }
 

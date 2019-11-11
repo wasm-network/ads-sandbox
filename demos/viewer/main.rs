@@ -3,6 +3,9 @@ mod samples;
 
 use app::*;
 
+#[macro_use]
+extern crate lazy_static;
+
 use quicksilver::{
     geom::Vector,
     lifecycle::{run_with, Settings},

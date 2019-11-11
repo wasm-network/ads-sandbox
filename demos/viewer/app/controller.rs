@@ -43,7 +43,7 @@ pub trait Controller {
     /// This is the first stage in the view lifecycle after new() is called. Here is where you should
     /// layout subviews, load data, and prepare for display.
     /// TODO: pass theme as param
-    fn view_will_load(&mut self);
+    fn view_will_load(&mut self, theme: &mut Theme);
 
     /// Set the theme. This starts from the AppDelegate and passes down to the controller(s)
     fn set_theme(&mut self, theme: &mut Theme);
@@ -76,8 +76,8 @@ pub trait Controller {
 pub struct EmptyController {}
 
 impl Controller for EmptyController {
-    fn view_will_load(&mut self) {}
-    fn set_theme(&mut self, _theme: &mut Theme) {}
+    fn view_will_load(&mut self, theme: &mut Theme) {}
+    fn set_theme(&mut self, theme: &mut Theme) {}
     fn update(&mut self, window: &mut Window, state: &mut AppState) {}
     fn render(&mut self, theme: &mut Theme, window: &mut Window) {}
 }

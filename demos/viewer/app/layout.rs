@@ -1,6 +1,16 @@
 /// Tools for parsing and hacking layouts created by the Stretch flexbox crate
 ///
 ///
+///
+use tweek::{
+    gui::*,
+    tools::*,
+};
+
+use quicksilver::{
+    geom::{Rectangle, Vector},
+};
+
 #[allow(unused_imports)]
 use stretch::{
     geometry::*,
@@ -135,4 +145,13 @@ impl LayoutBuilder {
             result.children.push(item);
         }
     }
+}
+
+pub struct LayoutHelper {}
+
+impl LayoutHelper {
+
+    // pub fn frame_for_text(text: &str, size: f32, font: &mut DrawFont) -> Rectangle {
+
+    // }
 }

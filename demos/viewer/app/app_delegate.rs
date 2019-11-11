@@ -61,7 +61,7 @@ impl AppDelegate {
 
         let mut controller = AdViewer::new(Rectangle::new_sized(screen));
         // Load stage here
-        controller.view_will_load();
+        controller.view_will_load(&mut self.theme);
         controller.set_theme(&mut self.theme);
         self.controller = Box::new(controller);
     }
