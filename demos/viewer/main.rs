@@ -1,5 +1,7 @@
-mod application;
-use application::*;
+mod app;
+mod samples;
+
+use app::*;
 
 use quicksilver::{
     geom::Vector,

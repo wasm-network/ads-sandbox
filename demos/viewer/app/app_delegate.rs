@@ -3,6 +3,7 @@
 ///
 ///
 use super::*;
+use crate::samples::*;
 
 use tweek::{
     core::*,
@@ -58,6 +59,8 @@ impl AppDelegate {
 
     /// Application lifecycle event called before runloop starts
     pub fn application_ready(&mut self) {
+
+
         self.stage.scenes.clear();
         // Load stage here
         self.stage.set_theme(&mut self.theme);
