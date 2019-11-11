@@ -42,12 +42,12 @@ impl TeapotAd {
     }
 
     fn background_scene(&self, frame: &Rectangle) -> Scene {
-        let mut scene = Scene::new(frame.clone());
+        let mut scene = Scene::new(frame.clone()).with_id(201, "Ad background");
 
         let rect = Rectangle::new((0.0, 0.0), (frame.width(), 160.0));
         let fill_color = Color::from_hex("#003300");
-        let mut shape = DrawShape::rectangle(&frame, Some(fill_color), None, 0.0, 0.0);
-        let header_bg = ShapeView::new(*frame, ShapeDef::Rectangle).with_mesh(&mut shape);
+        let mut shape = DrawShape::rectangle(&rect, Some(fill_color), None, 0.0, 0.0);
+        let header_bg = ShapeView::new(rect, ShapeDef::Rectangle).with_mesh(&mut shape);
         scene.add_view(Box::new(header_bg));
 
         scene

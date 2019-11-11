@@ -36,15 +36,17 @@ const TOOLBAR_BTN_H: f32 = 32.0;
 pub struct AdViewer {
     frame: Rectangle,
     stage: Stage,
+    ad_spec: AdSpec,
 }
 
 impl AdViewer {
     pub fn new(frame: Rectangle) -> AdViewer {
         let stage = Stage::new(frame.clone());
-
+        let ad_spec = AdSpec::default();
         let controller = AdViewer {
             frame,
             stage,
+            ad_spec,
         };
         controller
     }
@@ -52,8 +54,15 @@ impl AdViewer {
     fn build_stage(&mut self, frame: Rectangle, theme: &mut Theme) -> Stage {
 
         let mut builder = TeapotAd {};
-        let mut stage = builder.build_stage(&frame);
-        stage.offset_position(Vector::new(0.0, TOOLBAR_H));
+
+        let body_frame = Rectangle::new((0.0, TOOLBAR_H), (frame.width(), frame.height() - TOOLBAR_H));
+
+        let mut ad_frame = Rectangle::new_sized((self.ad_spec.width, self.ad_spec.height));
+        println!("ad_frame={:?}", ad_frame);
+
+        let centered = LayoutHelper::center_frame(&frame, &ad_frame);
+        let mut stage = builder.build_stage(&ad_frame);
+        stage.offset_position(centered.pos);
 
         let rect = Rectangle::new(frame.pos, (frame.width(), TOOLBAR_H));
         let toolbar = self.toolbar_scene(&rect);

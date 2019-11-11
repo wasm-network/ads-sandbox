@@ -151,6 +151,13 @@ pub struct LayoutHelper {}
 
 impl LayoutHelper {
 
+    pub fn center_frame(outer: &Rectangle, inner: &Rectangle) -> Rectangle {
+        let mut result = inner.clone();
+        result.pos.x = (outer.width() - inner.width()) / 2.0;
+        result.pos.y = (outer.height() - inner.height()) / 2.0;
+        result
+    }
+
     // pub fn frame_for_text(text: &str, size: f32, font: &mut DrawFont) -> Rectangle {
 
     // }
