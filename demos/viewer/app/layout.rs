@@ -151,6 +151,8 @@ pub struct LayoutHelper {}
 
 impl LayoutHelper {
 
+    /// Center the inner frame in the outer frame with the specified offset.
+    /// Offset can be Vector::ZERO for no offset.
     pub fn center_frame(outer: &Rectangle, inner: &Rectangle, offset: Vector) -> Rectangle {
         let mut result = inner.clone();
         result.pos.x = (outer.width() - inner.width()) / 2.0 + offset.x;

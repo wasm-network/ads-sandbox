@@ -20,6 +20,11 @@ use quicksilver::{
     Error, Result,
 };
 
+use std::any::TypeId;
+
+const FPS_INTERVAL: usize = 40;
+pub const FPS_TAG: u32 = 901;
+
 //-- Main -----------------------------------------------------------------------
 
 /// AppDelegate serves as a layer between the backend runloop and Tweek UI.
@@ -28,6 +33,7 @@ pub struct AppDelegate {
     controller: Box<dyn Controller>,
     theme: Theme,
     app_state: AppState,
+    data_scene: Scene,
     frames: usize,
     did_launch: bool,
 }
@@ -40,16 +46,29 @@ impl AppDelegate {
         theme.font_size = 18.0;
         theme.bg_color = Color::from_hex("#FFFFEE");
 
+        // Add data scene for displaying FPS and other info
+        let frame = Rectangle::new_sized(screen);
+        let mut data_scene = Scene::new(frame);
+
+        let x = 20.0;
+        let y = screen.y - 40.0;
+        let frame = Rectangle::new((x, y), (80.0, 20.0));
+        let mut text = Text::new(frame, "");
+        text.layer.font_style = FontStyle::new(14.0, Color::RED);
+        text.set_id(FPS_TAG);
+        data_scene.add_control(Box::new(text));
 
         let mut app_state = AppState::new();
         app_state.window_size = (screen.x, screen.y);
 
         let frame = Rectangle::new((0.0, 0.0), (screen.x, screen.y));
         let controller = Box::new(EmptyController{});
+
         let app = AppDelegate {
             controller,
             theme,
             app_state,
+            data_scene,
             frames: 0,
             did_launch: false,
         };
@@ -83,12 +102,12 @@ impl State for AppDelegate {
         }
         self.controller.update(window, &mut self.app_state);
 
-        // self.frames += 1;
-        // if (self.frames % FPS_INTERVAL) == 0 {
-        //     self.frames = 0;
-        //     let out = format!("FPS: {:.2}", window.current_fps());
-        //     self.nav_scene.set_field_value(&FieldValue::Text(out), TypeId::of::<Text>(), FPS_TAG);
-        // }
+        self.frames += 1;
+        if (self.frames % FPS_INTERVAL) == 0 {
+            self.frames = 0;
+            let out = format!("FPS: {:.2}", window.current_fps());
+            self.data_scene.set_field_value(&FieldValue::Text(out), TypeId::of::<Text>(), FPS_TAG);
+        }
 
         Ok(())
     }
@@ -97,6 +116,8 @@ impl State for AppDelegate {
         // Remove any lingering artifacts from the previous frame
         window.clear(self.theme.bg_color)?;
         self.controller.render(&mut self.theme, window);
+        self.data_scene.render(&mut self.theme, window);
+
         Ok(())
     }
 

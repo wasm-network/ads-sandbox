@@ -53,31 +53,45 @@ impl AdViewer {
 
     fn assemble_stage(&mut self, frame: Rectangle, theme: &mut Theme) -> Stage {
         let mut stage = Stage::new(frame.clone());
-        let mut builder = TeapotAd {};
 
+        // let rect = Rectangle::new(frame.pos, (frame.width(), TOOLBAR_H));
+        let toolbar = self.tools_scene(&frame);
+        stage.add_scene(toolbar);
+
+        // 2. Build ad
         let body_frame = Rectangle::new((0.0, TOOLBAR_H), (frame.width(), frame.height() - TOOLBAR_H));
-
         let mut ad_frame = Rectangle::new_sized((self.ad_spec.width, self.ad_spec.height));
+
+        // Center the ad_frame inside the body_frame offset by the toolbar height
         let offset = Vector::new(0.0, TOOLBAR_H);
         let ad_frame = LayoutHelper::center_frame(&body_frame, &ad_frame, offset);
-        builder.build_stage(&mut stage, &ad_frame);
 
-        let rect = Rectangle::new(frame.pos, (frame.width(), TOOLBAR_H));
-        let toolbar = self.toolbar_scene(&rect);
-        stage.add_scene(toolbar);
+        // Finish the Stage using the specified ad
+        let mut builder = TeapotAdBuilder {};
+        builder.build_stage(&mut stage, &ad_frame, theme);
 
         stage
     }
 
     /// Setup toolbar buttons
-    fn toolbar_scene(&mut self, frame: &Rectangle) -> Scene {
+    fn tools_scene(&mut self, frame: &Rectangle) -> Scene {
 
         let mut scene = Scene::new(frame.clone()).with_id(TOOLBAR_ID, "Toolbar");
-        scene.layer.border_style = BorderStyle::SolidLine(Color::BLACK, 1.0);
+
+        let fill_color = Color::from_hex("#555555");
+        let mut shape = DrawShape::rectangle(&frame, Some(fill_color), None, 0.0, 0.0);
+        let bg = ShapeView::new(*frame, ShapeDef::Rectangle).with_mesh(&mut shape);
+        scene.add_view(Box::new(bg));
+
+        let rect = Rectangle::new(frame.pos, (frame.width(), TOOLBAR_H));
+        let fill_color = Color::from_hex("#333333");
+        let mut shape = DrawShape::rectangle(&rect, Some(fill_color), None, 0.0, 0.0);
+        let bg = ShapeView::new(rect.clone(), ShapeDef::Rectangle).with_mesh(&mut shape);
+        scene.add_view(Box::new(bg));
 
         const SPACING: f32 = 8.0;
         let mut xpos = SPACING;
-        let ypos = (frame.height() - TOOLBAR_BTN_H) / 2.0;
+        let ypos = (rect.height() - TOOLBAR_BTN_H) / 2.0;
 
         // Toolbar buttons to add/remove
 
