@@ -29,7 +29,7 @@ impl Application {
             delegate,
         };
 
-        app.delegate.application_ready();
+        app.delegate.application_ready(screen);
 
         Ok(app)
     }

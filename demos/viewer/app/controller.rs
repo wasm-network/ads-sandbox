@@ -37,12 +37,6 @@ pub trait Controller {
     /// TODO: return struct with more information.
     fn screen_title(&self) -> &str { "" }
 
-    /// The controller provides the list of nav items to appear in the navbar from left-to-right
-    fn left_nav_items(&self) -> Vec<NavItem> { Vec::new() }
-
-    /// The controller provides the list of nav items to appear in the navbar from left-to-right
-    fn right_nav_items(&self) -> Vec<NavItem> { Vec::new() }
-
     /// Get next view controller to navigate to given a specified NavEvent (e.g. next, back, etc)
     // fn nav_target_for_event(&mut self, _event: &NavEvent, _ctx: &mut AppContext) -> Option<NavTarget> { None }
 
@@ -76,8 +70,16 @@ pub trait Controller {
 
     /// This is generally a passthru method to the Tweek gui controls
     fn handle_mouse_scroll(&mut self, _pt: &Vector, _state: &mut AppState) {}
+}
 
+/// A default controller that can be used as a placeholder during startup
+pub struct EmptyController {}
 
+impl Controller for EmptyController {
+    fn view_will_load(&mut self) {}
+    fn set_theme(&mut self, _theme: &mut Theme) {}
+    fn update(&mut self, window: &mut Window, state: &mut AppState) {}
+    fn render(&mut self, theme: &mut Theme, window: &mut Window) {}
 }
 
 // UNUSED
