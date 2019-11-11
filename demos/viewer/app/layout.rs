@@ -151,10 +151,10 @@ pub struct LayoutHelper {}
 
 impl LayoutHelper {
 
-    pub fn center_frame(outer: &Rectangle, inner: &Rectangle) -> Rectangle {
+    pub fn center_frame(outer: &Rectangle, inner: &Rectangle, offset: Vector) -> Rectangle {
         let mut result = inner.clone();
-        result.pos.x = (outer.width() - inner.width()) / 2.0;
-        result.pos.y = (outer.height() - inner.height()) / 2.0;
+        result.pos.x = (outer.width() - inner.width()) / 2.0 + offset.x;
+        result.pos.y = (outer.height() - inner.height()) / 2.0 + offset.y;
         result
     }
 

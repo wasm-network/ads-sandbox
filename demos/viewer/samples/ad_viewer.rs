@@ -51,18 +51,16 @@ impl AdViewer {
         controller
     }
 
-    fn build_stage(&mut self, frame: Rectangle, theme: &mut Theme) -> Stage {
-
+    fn assemble_stage(&mut self, frame: Rectangle, theme: &mut Theme) -> Stage {
+        let mut stage = Stage::new(frame.clone());
         let mut builder = TeapotAd {};
 
         let body_frame = Rectangle::new((0.0, TOOLBAR_H), (frame.width(), frame.height() - TOOLBAR_H));
 
         let mut ad_frame = Rectangle::new_sized((self.ad_spec.width, self.ad_spec.height));
-        println!("ad_frame={:?}", ad_frame);
-
-        let centered = LayoutHelper::center_frame(&frame, &ad_frame);
-        let mut stage = builder.build_stage(&ad_frame);
-        stage.offset_position(centered.pos);
+        let offset = Vector::new(0.0, TOOLBAR_H);
+        let ad_frame = LayoutHelper::center_frame(&body_frame, &ad_frame, offset);
+        builder.build_stage(&mut stage, &ad_frame);
 
         let rect = Rectangle::new(frame.pos, (frame.width(), TOOLBAR_H));
         let toolbar = self.toolbar_scene(&rect);
@@ -167,7 +165,7 @@ impl AdViewer {
 impl Controller for AdViewer {
 
     fn view_will_load(&mut self, theme: &mut Theme) {
-        self.stage = self.build_stage(self.frame.clone(), theme);
+        self.stage = self.assemble_stage(self.frame.clone(), theme);
         self.stage.notify(&DisplayEvent::Ready);
     }
 

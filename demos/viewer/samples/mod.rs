@@ -34,9 +34,9 @@ impl AdSpec {
 impl Default for AdSpec {
     fn default() -> Self {
         AdSpec {
-            width: 300.0,
-            height: 250.0,
-            name: "Inline Rectangle".to_string(),
+            width: 500.0,
+            height: 500.0,
+            name: "Default 500x500".to_string(),
         }
     }
 }

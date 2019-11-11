@@ -28,23 +28,19 @@ const SUBTITLE_FONT_SIZE: f32 = 55.0;
 pub struct TeapotAd {}
 
 impl TeapotAd {
-    pub fn build_stage(&mut self, frame: &Rectangle) -> Stage {
-        let mut stage = Stage::new(frame.clone());
+    pub fn build_stage(&mut self, stage: &mut Stage, frame: &Rectangle) {
         stage.title = "Teapot Ad".to_string();
 
         let background = self.background_scene(&frame);
         stage.add_scene(background);
 
-        // let intro = self.intro_scene(frame);
-        // stage.add_scene(intro);
-
-        stage
     }
 
     fn background_scene(&self, frame: &Rectangle) -> Scene {
         let mut scene = Scene::new(frame.clone()).with_id(201, "Ad background");
+        scene.layer.border_style = BorderStyle::SolidLine(Color::BLACK, 1.0);
 
-        let rect = Rectangle::new((0.0, 0.0), (frame.width(), 160.0));
+        let rect = Rectangle::new(frame.pos, (frame.width(), 160.0));
         let fill_color = Color::from_hex("#003300");
         let mut shape = DrawShape::rectangle(&rect, Some(fill_color), None, 0.0, 0.0);
         let header_bg = ShapeView::new(rect, ShapeDef::Rectangle).with_mesh(&mut shape);
