@@ -51,12 +51,12 @@ impl AdViewer {
         controller
     }
 
-    fn assemble_stage(&mut self, frame: Rectangle, theme: &mut Theme) -> Stage {
+    fn assemble_stage(&mut self, frame: Rectangle, theme: &mut Theme, spec: AdSpec) -> Stage {
         let mut stage = Stage::new(frame.clone());
 
-        // let rect = Rectangle::new(frame.pos, (frame.width(), TOOLBAR_H));
-        let toolbar = self.tools_scene(&frame);
-        stage.add_scene(toolbar);
+        // 1. Set up tools and background
+        let tools_bg = self.tools_scene(&frame);
+        stage.add_scene(tools_bg);
 
         // 2. Build ad
         let body_frame = Rectangle::new((0.0, TOOLBAR_H), (frame.width(), frame.height() - TOOLBAR_H));
@@ -68,7 +68,7 @@ impl AdViewer {
 
         // Finish the Stage using the specified ad
         let mut builder = TeapotAdBuilder {};
-        builder.build_stage(&mut stage, &ad_frame, theme);
+        builder.build_stage(&mut stage, &ad_frame, theme, &spec);
 
         stage
     }
@@ -179,7 +179,7 @@ impl AdViewer {
 impl Controller for AdViewer {
 
     fn view_will_load(&mut self, theme: &mut Theme) {
-        self.stage = self.assemble_stage(self.frame.clone(), theme);
+        self.stage = self.assemble_stage(self.frame.clone(), theme, AdSpec::default());
         self.stage.notify(&DisplayEvent::Ready);
     }
 

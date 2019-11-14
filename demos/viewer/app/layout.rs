@@ -31,6 +31,47 @@ pub struct NodeLayout {
 
 impl NodeLayout {}
 
+// #[derive(Clone, Debug, PartialEq)]
+// pub struct LayoutRule {
+//     pub scale_x: f32,
+//     pub scale_y: f32,
+//     pub margins: Margins
+// }
+
+// impl LayoutRule {
+//     pub fn new(scale_x: f32, scale_y: f32) -> Self {
+//         LayoutRule {
+//             scale_x,
+//             scale_y,
+//             margins: Margins::default(),
+//         }
+//     }
+// }
+
+pub struct Margins {
+    pub left: f32,
+    pub top: f32,
+    pub right: f32,
+    pub bottom: f32,
+}
+
+impl Margins {
+    pub fn new(left: f32, top: f32, right: f32, bottom: f32) -> Self {
+        Margins { left, top, right, bottom }
+    }
+}
+
+impl Default for Margins {
+    fn default() -> Self {
+        Margins {
+            left: 0.0,
+            top: 0.0,
+            right: 0.0,
+            bottom: 0.0,
+        }
+    }
+}
+
 pub struct LayoutBuilder {
     pub root: Node,
     stretch: Stretch,
@@ -160,6 +201,11 @@ impl LayoutHelper {
         result
     }
 
+    // pub fn position_frame(frame: &Rectangle, spec: &AdSpec) -> Rectangle {
+
+    // }
+
+    // pub fn align_frame()
     // pub fn frame_for_text(text: &str, size: f32, font: &mut DrawFont) -> Rectangle {
 
     // }

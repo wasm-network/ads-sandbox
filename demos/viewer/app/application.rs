@@ -16,13 +16,6 @@ pub struct Application {
 
 impl Application {
     pub fn new(screen: Vector) -> Result<Application> {
-        std::env::set_var("RUST_LOG", "main=debug,tweek=debug");
-
-        #[cfg(not(target_arch = "wasm32"))]
-        env_logger::builder().default_format_timestamp(false).default_format_module_path(false).init();
-        #[cfg(not(target_arch = "wasm32"))]
-        color_backtrace::install();
-
         let delegate = AppDelegate::new(screen.clone());
         let mut app = Application {
             screen,
