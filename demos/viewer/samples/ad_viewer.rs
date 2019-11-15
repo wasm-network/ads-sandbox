@@ -99,10 +99,24 @@ impl AdViewer {
             let subframe = scene.sub_frame((xpos, ypos), (TOOLBAR_BTN_W, TOOLBAR_BTN_H));
             let mut button = Button::new(subframe).with_text(key);
             button.layer.font_style = FontStyle::new(14.0, Color::BLACK);
+            button.layer.corner_radius = 3.0;
             scene.add_control(Box::new(button));
             // TODO: add callback
             xpos += (TOOLBAR_BTN_W + SPACING);
         }
+
+        let img = DrawImage::load_image_file("icons/ios-play.png").unwrap();
+        println!(">>> load_image_file {}", img.raw_pixels().len());
+
+        let subframe = scene.sub_frame((frame.width() - 68.0, ypos), (60.0, TOOLBAR_BTN_H));
+        let mut label = Label::new(subframe.clone());
+        label.set_image(img);
+        label.display = LabelDisplay::Image;
+
+        let mut button = Button::new(subframe);
+        button.set_label(label);
+        button.layer.corner_radius = 3.0;
+        scene.add_control(Box::new(button));
 
         scene
     }

@@ -72,35 +72,38 @@ impl TeapotAdBuilder {
 
         let font_size = INTRO_FONT_SIZE * spec.scale_y;
         let subframe = Rectangle::new_sized((frame.width(), font_size));
-        let mut text = Text::new(subframe, INTRO_TEXT_1);
-        text.set_id(INTRO_1_ID);
-        text.layer.font_style = FontStyle::new(font_size, Color::BLACK);
-        text.text_align(TextAlign::Center);
-        text.layer.lock_style = true; // TODO: add style() function to Text
-
         let xpos = frame.width() + 10.0;
         let ypos = (frame.height() - subframe.height()) / 2.0;
 
-        text.get_layer_mut().frame.pos.x = xpos;
-        text.get_layer_mut().frame.pos.y = ypos;
+        let mut label = Label::new(subframe);
+        label.set_id(INTRO_1_ID);
+        label.set_text(INTRO_TEXT_1);
+        label.display = LabelDisplay::Text;
+        label.layer.font_style = FontStyle::new(font_size, Color::BLACK);
+        label.layer.lock_style = true;
+        // label.layer.tween_type = TweenType::Move; // FIXME
 
-        let text_size = text.get_content_size();
-        let target_x = (frame.width() - text_size.x) / 2.0;
+        label.get_layer_mut().frame.pos.x = xpos;
+        label.get_layer_mut().frame.pos.y = ypos;
 
-        let mut tween = Tween::with(INTRO_1_ID, &text.layer)
+        let mut tween = Tween::with(INTRO_1_ID, &label.layer)
             .to(&[position(0.0, ypos)])
-            .duration(1.0)
+            .duration(0.5)
+            .to(&[])
+            .duration(0.5)
+            .to(&[position(-frame.width(), ypos)])
+            .duration(0.5)
             ;
-        tween.debug = true;
-        tween.state = PlayState::Pending;
-        &tween.play();
-        text.layer.set_animation(tween);
+        // tween.debug = true;
+        // tween.state = PlayState::Pending;
+        // &tween.play();
+        label.layer.start_animation(tween);
         // text.layer.tween_type = TweenType::Move;
         // timeline.add_sprite(Box::new(text), 0.0);
         // timeline.stagger(0.125);
         // &timeline.play();
         // scene.set_timeline(timeline);
-        scene.add_control(Box::new(text));
+        scene.add_view(Box::new(label));
         scene
     }
 }
