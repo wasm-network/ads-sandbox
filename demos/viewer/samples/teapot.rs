@@ -73,10 +73,10 @@ impl TeapotAdBuilder {
         let mut scene = Scene::new(frame.clone());
 
         let mut timeline = Timeline::new(frame.clone());
-
         let font_size = INTRO_FONT_SIZE * spec.scale_y;
 
         let label = self.make_intro_text(INTRO_TEXT_1, font_size, frame, theme, INTRO_1_ID);
+        // label.layer.enable_debug();
         timeline.add_sprite(Box::new(label), 0.0);
 
         let label = self.make_intro_text(INTRO_TEXT_2, font_size, frame, theme, INTRO_2_ID);
@@ -93,7 +93,7 @@ impl TeapotAdBuilder {
     fn make_intro_text(&self, text: &str, font_size: f32, frame: &Rectangle, theme: &mut Theme, id: u32) -> Label {
         let text_size = theme.default_font.measure_text(text, font_size);
         let origin = frame.center_origin(text_size);
-        log::debug!("text_size={:?} origin={:?}", text_size, origin);
+        // log::trace!("text_size={:?} origin={:?}", text_size, origin);
         let xpos = frame.x() + frame.width() + 10.0;
         let ypos = origin.1;
         let subframe = Rectangle::new((xpos, ypos), (text_size.0, font_size));
@@ -105,7 +105,7 @@ impl TeapotAdBuilder {
         label.display = LabelDisplay::Text;
         label.layer.font_style = FontStyle::new(font_size, Color::BLACK);
         label.layer.lock_style = true;
-        let final_x = -text_size.0 - 10.0;
+        let final_x = -text_size.0 - 10.0 + frame.x();
         let mut tween = Tween::with(id, &label.layer)
             .to(&[position(origin.0, ypos)])
             .duration(0.5)
@@ -116,7 +116,6 @@ impl TeapotAdBuilder {
             .duration(0.5)
             .ease(Ease::SineOut)
             ;
-        // tween.debug = true;
         label.layer.set_animation(tween);
         label
     }

@@ -116,6 +116,23 @@ impl AdViewer {
         let mut button = Button::new(subframe);
         button.set_label(label);
         button.layer.corner_radius = 3.0;
+        button.set_onclick(move |state| {
+            state.event_bus.register_event(PlayerEvent::Play);
+        });
+
+        // let node = Node::new(MAIN_SCENE, TypeId::of::<Scene>());
+        // let mut command = Command::new(Box::new(button))
+        //     .target(MAIN_SCENE, TypeId::of::<Scene>())
+        //     .event(SceneEvent::Show(node.clone()))
+        //     .animate(
+        //         PropSet::new(vec![position(modal_x, ypos)], 0.5)
+        //             .for_type(TweenType::Move)
+        //             .ease(Ease::SineInOut)
+        //             .delay(0.5),
+        //     );
+        // bg_scene.add_command(command);
+
+
         scene.add_control(Box::new(button));
 
         scene
@@ -205,49 +222,16 @@ impl Controller for AdViewer {
         "Theme Builder"
     }
 
-    // fn nav_target_for_event(&mut self, event: &NavEvent, _ctx: &mut AppContext) -> Option<NavTarget> {
-    //     match event {
-    //         NavEvent::Next => {
-    //             let controller = SettingsController::new(self.frame.clone());
-    //             let target = NavTarget {
-    //                 nav_event: event.clone(),
-    //                 controller: Rc::new(RefCell::new(controller))
-    //             };
-    //             return Some(target);
-    //         }
-    //         _ => ()
-    //     }
-    //     None
-    // }
+    fn handle_event(&mut self, event: &EventBox) {
+        self.stage.handle_event(event);
+    }
 
     fn update(&mut self, window: &mut Window, state: &mut AppState) {
-        // This is just placeholder code for future consideration of what kinds of events
-        // might get queued within this controller.
-        // let mut nav_event: Option<NavEvent> = None;
-        // if let Some(event) = self.events.borrow_mut().queue().first() {
-        //     match event.action {
-        //         Action::Button(tag) => {
-        //             match tag {
-        //                 BACK_BUTTON => { nav_event = Some(NavEvent::Back) },
-        //                 NEXT_BUTTON => { nav_event = Some(NavEvent::Next) },
-        //                 _ => {}
-        //             }
-        //         },
-        //         Action::Selected(idx) => { nav_event = Some(NavEvent::Selected(idx)) },
-        //         // _ => {}
-        //     }
-        // }
-        // if let Some(evt) = nav_event {
-        //     ctx.event_bus.register_event(evt);
-        // }
-
-        let _ = self.stage.update(window, state);
-
+        self.stage.update(window, state);
     }
 
     fn render(&mut self, theme: &mut Theme, window: &mut Window) {
-        let _ = self.stage.render(theme, window);
-        // let _ = self.navbar.render(theme, window);
+        self.stage.render(theme, window);
     }
 
     fn handle_mouse_at(&mut self, pt: &Vector, window: &mut Window) -> bool {
@@ -257,11 +241,6 @@ impl Controller for AdViewer {
 
     fn handle_mouse_down(&mut self, pt: &Vector, state: &mut AppState) -> bool {
         println!(">>> handle_mouse_down");
-        // if let Some(ref mut rc) = self.nav.upgrade() {
-        //     let mut nav = rc.borrow_mut();
-        //     (&mut *nav).notify("Booo");
-        //     // rc.borrow_mut().notify("Mouse down");
-        // }
         self.stage.handle_mouse_down(pt, state)
     }
 

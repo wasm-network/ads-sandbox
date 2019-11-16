@@ -51,6 +51,9 @@ pub trait Controller {
     /// Method to signal that a controller will be leaving or entering the parent controller
     fn view_will_transition(&mut self, _event: NavEvent) {}
 
+    /// Top-down notification of events to child objects
+    fn handle_event(&mut self, event: &EventBox) {}
+
     /// The sync method is called from Quicksilver's update loop and eventually gets passed down
     /// to the Scene and lower level Tweek gui objects. It carries the AppContext as a mutable ref
     /// which contains the EventBus where events are propogated up (and possibly down, TBD)

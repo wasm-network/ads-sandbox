@@ -98,9 +98,10 @@ impl State for AppDelegate {
     }
 
     fn update(&mut self, window: &mut Window) -> Result<()> {
-        for event in self.app_state.event_bus.into_iter() {
-        }
         self.controller.update(window, &mut self.app_state);
+        for event in self.app_state.event_bus.into_iter() {
+            self.controller.handle_event(&event);
+        }
 
         self.frames += 1;
         if (self.frames % FPS_INTERVAL) == 0 {
