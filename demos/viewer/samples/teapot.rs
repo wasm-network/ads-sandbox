@@ -28,7 +28,9 @@ const SUBTITLE_FONT_SIZE: f32 = 55.0;
 
 const BG_HEADER_H: f32 = 160.0;
 
-const INTRO_TEXT_1: &'static str = "Heading 1";
+const INTRO_TEXT_1: &'static str = "Introducing";
+const INTRO_TEXT_2: &'static str = "A Very Basic";
+const INTRO_TEXT_3: &'static str = "Animated Ad";
 
 const INTRO_1_ID: u32 = 221;
 const INTRO_2_ID: u32 = 222;
@@ -39,11 +41,13 @@ pub struct TeapotAdBuilder {}
 impl TeapotAdBuilder {
     pub fn build_stage(&mut self, stage: &mut Stage, frame: &Rectangle, theme: &mut Theme, spec: &AdSpec) {
         stage.title = "Teapot Ad".to_string();
-
+        log::debug!("build_stage frame={:?}", frame);
+        log::debug!("build_stage spec={:?}", spec);
         let background = self.background_scene(frame, spec);
         stage.add_scene(background);
 
-        let intro = self.intro_scene(frame, spec);
+        // let body_frame = Rectangle::new
+        let intro = self.intro_scene(frame, spec, theme);
         stage.add_scene(intro);
 
 
@@ -65,45 +69,55 @@ impl TeapotAdBuilder {
 
     /// Create a Scene with 3 text elements that will animate from the right to the middle, wait,
     /// and then animate out to the left. Each sequentially
-    fn intro_scene(&self, frame: &Rectangle, spec: &AdSpec) -> Scene {
+    fn intro_scene(&self, frame: &Rectangle, spec: &AdSpec, theme: &mut Theme) -> Scene {
         let mut scene = Scene::new(frame.clone());
 
         let mut timeline = Timeline::new(frame.clone());
 
         let font_size = INTRO_FONT_SIZE * spec.scale_y;
-        let subframe = Rectangle::new_sized((frame.width(), font_size));
-        let xpos = frame.width() + 10.0;
-        let ypos = (frame.height() - subframe.height()) / 2.0;
 
-        let mut label = Label::new(subframe);
-        label.set_id(INTRO_1_ID);
-        label.set_text(INTRO_TEXT_1);
+        let label = self.make_intro_text(INTRO_TEXT_1, font_size, frame, theme, INTRO_1_ID);
+        timeline.add_sprite(Box::new(label), 0.0);
+
+        let label = self.make_intro_text(INTRO_TEXT_2, font_size, frame, theme, INTRO_2_ID);
+        timeline.add_sprite(Box::new(label), 2.0);
+
+        let label = self.make_intro_text(INTRO_TEXT_3, font_size, frame, theme, INTRO_3_ID);
+        timeline.add_sprite(Box::new(label), 4.0);
+        &timeline.play();
+        scene.set_timeline(timeline);
+
+        scene
+    }
+
+    fn make_intro_text(&self, text: &str, font_size: f32, frame: &Rectangle, theme: &mut Theme, id: u32) -> Label {
+        let text_size = theme.default_font.measure_text(text, font_size);
+        let origin = frame.center_origin(text_size);
+        log::debug!("text_size={:?} origin={:?}", text_size, origin);
+        let xpos = frame.x() + frame.width() + 10.0;
+        let ypos = origin.1;
+        let subframe = Rectangle::new((xpos, ypos), (text_size.0, font_size));
+
+        // Intro #1
+        let mut label = Label::new(subframe.clone());
+        label.set_id(id);
+        label.set_text(text);
         label.display = LabelDisplay::Text;
         label.layer.font_style = FontStyle::new(font_size, Color::BLACK);
         label.layer.lock_style = true;
-        // label.layer.tween_type = TweenType::Move; // FIXME
-
-        label.get_layer_mut().frame.pos.x = xpos;
-        label.get_layer_mut().frame.pos.y = ypos;
-
-        let mut tween = Tween::with(INTRO_1_ID, &label.layer)
-            .to(&[position(0.0, ypos)])
+        let final_x = -text_size.0 - 10.0;
+        let mut tween = Tween::with(id, &label.layer)
+            .to(&[position(origin.0, ypos)])
             .duration(0.5)
+            .ease(Ease::SineIn)
             .to(&[])
+            .duration(1.0)
+            .to(&[position(final_x, ypos)])
             .duration(0.5)
-            .to(&[position(-frame.width(), ypos)])
-            .duration(0.5)
+            .ease(Ease::SineOut)
             ;
         // tween.debug = true;
-        // tween.state = PlayState::Pending;
-        // &tween.play();
-        label.layer.start_animation(tween);
-        // text.layer.tween_type = TweenType::Move;
-        // timeline.add_sprite(Box::new(text), 0.0);
-        // timeline.stagger(0.125);
-        // &timeline.play();
-        // scene.set_timeline(timeline);
-        scene.add_view(Box::new(label));
-        scene
+        label.layer.set_animation(tween);
+        label
     }
 }
