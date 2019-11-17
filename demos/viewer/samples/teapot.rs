@@ -119,4 +119,13 @@ impl TeapotAdBuilder {
         label.layer.set_animation(tween);
         label
     }
+
+    fn make_final_scene(&self, frame: &Rectangle) -> Scene {
+        let mut scene = Scene::new(frame.clone());
+
+
+
+
+        scene
+    }
 }
